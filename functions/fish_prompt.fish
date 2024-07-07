@@ -18,12 +18,16 @@ end
 
 ## Function to show current status
 function show_status -d "Function to show the current status"
+  if [ $RETVAL -eq 0 ]
+    prompt_segment blue black " 󰀘  "
+    set pad ""
+    end
   if [ $RETVAL -ne 0 ]
-    prompt_segment red white " ▲ "
+    prompt_segment red black " ▲ "
     set pad ""
     end
   if [ -n "$SSH_CLIENT" ]
-      prompt_segment blue white " SSH: "
+      prompt_segment blue black " SSH: "
       set pad ""
     end
 end
@@ -60,23 +64,24 @@ end
 # Show directory
 function show_pwd -d "Show the current directory"
   set -l pwd
+  set -l catppuccin 1e1e2e
   if [ (string match -r '^'"$VIRTUAL_ENV_PROJECT" $PWD) ]
     set pwd (string replace -r '^'"$VIRTUAL_ENV_PROJECT"'($|/)' '≫ $1' $PWD)
   else
-    set pwd (prompt_pwd)
+    set pwd ( prompt_pwd )
   end
-  prompt_segment normal blue "$pad$pwd "
+  prompt_segment 313244 blue " $pad$pad$pwd "
 end
 
 # Show prompt w/ privilege cue
 function show_prompt -d "Shows prompt with cue for current priv"
   set -l uid (id -u $USER)
     if [ $uid -eq 0 ]
-    prompt_segment red white " ! "
+    prompt_segment red black " ! "
     set_color normal
     echo -n -s " "
   else
-    prompt_segment normal white " \$ "
+    prompt_segment normal white " "
     end
 
   set_color normal
@@ -85,9 +90,9 @@ end
 ## SHOW PROMPT
 function fish_prompt
   set -g RETVAL $status
+  echo " "
   show_status
   show_virtualenv
-  show_user
   show_pwd
   show_prompt
 end
